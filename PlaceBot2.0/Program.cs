@@ -9,7 +9,7 @@ namespace PlaceBot2._0
     {
         static void Main(string[] args)
         {
-            int thread_delay = 3;
+            int thread_delay = 1;
             //THESE COORDS ARE WHAT YOU SEE ON r/place in browser
             int startX = 0;
             int startY = 2;
@@ -18,7 +18,7 @@ namespace PlaceBot2._0
             List<string[]> userList = getUser(userfilePath);
             List<string> proxyList = getProxy(proxyFilePath);
             List<RedditPlaceWorker> botlist = new List<RedditPlaceWorker>();
-            string imagePath = "russia.png";
+            string imagePath = "";
             Bitmap bitmap = new Bitmap(imagePath);
             int i = 0;
             int k = 0;
