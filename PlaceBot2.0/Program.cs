@@ -20,7 +20,7 @@ namespace PlaceBot2._0
             List<RedditPlaceWorker> botlist = new List<RedditPlaceWorker>();
             string imagePath = "image.jpg";
             Bitmap bitmap = new Bitmap(imagePath);
-            botlist.Add(new RedditPlaceWorker(1, "Kings55328", "Kthenurse.123", "45.9.16.138:5136",bitmap,startX,startY));
+            botlist.Add(new RedditPlaceWorker(1, "PUT YOUR USERNAME HERE", "PUT PASSWORD HERE", "45.9.16.138:5136",bitmap,startX,startY));
             Console.WriteLine("Botlist Size = "+botlist.Count);
             List<Thread> threadlist = new List<Thread>();
             botlist[0].Init();
