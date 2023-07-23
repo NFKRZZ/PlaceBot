@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32002.261
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaceBot2.0", "PlaceBot2.0\PlaceBot2.0.csproj", "{1F08F8F1-5615-4AD6-9E41-34828195E42B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1F08F8F1-5615-4AD6-9E41-34828195E42B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F08F8F1-5615-4AD6-9E41-34828195E42B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F08F8F1-5615-4AD6-9E41-34828195E42B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F08F8F1-5615-4AD6-9E41-34828195E42B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0AB58FB5-F6B1-43A0-AEAE-100C45CFB939}
+	EndGlobalSection
+EndGlobal
