@@ -54,6 +54,7 @@ namespace PlaceBot2._0
         private int x_length;
         private int y_length;
         private int timeOut = 0;
+        private bool running = false;
 
 
 
@@ -99,7 +100,7 @@ namespace PlaceBot2._0
         }
 
 
-        void Loop()
+        async void Loop()
         {
 
             int localX = 0;
@@ -110,7 +111,17 @@ namespace PlaceBot2._0
                 Color currentLocationColor = sourceImage.GetPixel(localX, localY);
                 if (checkifPlacePixel(localX, localY, currentLocationColor))
                 {
-                    Task.Run(() => placePixel(currentLocationColor, localX, localY)).Wait();
+                    Task.Run(() => placePixel(currentLocationColor, localX, localY));
+                    running = true;
+                    while(running)
+                    {
+                        if(!running)
+                        {
+                            //THIS FORCES PLACEPIXEL TO COMPLETE ITS EXECUTION BEFORE MOVING ON SINCE RUNNING = FALSE AT THE END OF PLACEPIXEL()
+                            break;
+                        }
+                    }
+                    Console.WriteLine("Done");
                     localX++;
                     Thread.Sleep(timeOut * 1000);
                     timeOut = 0;
@@ -132,6 +143,7 @@ namespace PlaceBot2._0
 
                 
                 Thread.Sleep(500);
+                Console.WriteLine("Checking Board");
                 boardImage = getBoard(accessToken).Result;
             }
 
@@ -241,7 +253,7 @@ namespace PlaceBot2._0
                 {
                     int waitTime = (int)Math.Floor(responseJson["errors"][0]["extensions"]["nextAvailablePixelTs"].Value<double>());
                     Console.WriteLine(name + "couldnt place, ratelimited for " + waitTime + " seconds");
-                    timeOut = waitTime;
+                    timeOut = Math.Abs(waitTime);
                 }
                 catch (Exception ex)
                 {
@@ -254,12 +266,14 @@ namespace PlaceBot2._0
             }
             else
             {
+                Console.WriteLine(responseJson["data"].ToString());
                 File.WriteAllText("fuck.txt",responseJson.ToString());
                 int waitTime = (int)Math.Floor(responseJson["data"]["act"]["data"][0]["data"]["nextAvailablePixelTimestamp"].Value<double>());
-                timeOut = waitTime;
+                timeOut = 310;
                 Console.WriteLine(name + " succeeded in placing the pixel");
                 Console.WriteLine("this is timeout: " + timeOut + " seconds");
             }
+            running = false;
         }
         bool checkifPlacePixel(int x, int y, Color color)
         {

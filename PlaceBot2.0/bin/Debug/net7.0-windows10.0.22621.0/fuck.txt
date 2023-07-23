@@ -1,20 +1,25 @@
 {
-  "errors": [
-    {
-      "message": "Ratelimited",
-      "path": [
-        "act"
+  "data": {
+    "act": {
+      "data": [
+        {
+          "id": "f5efec63-fa4c-4325-85a1-9fdd7a3a17b7",
+          "data": {
+            "nextAvailablePixelTimestamp": 1690102125000.0,
+            "__typename": "GetUserCooldownResponseMessageData"
+          },
+          "__typename": "BasicMessage"
+        },
+        {
+          "id": "e9ab4d6b-1227-4a30-9f0f-24ae2e41cdb8",
+          "data": {
+            "timestamp": 1690101825203.0,
+            "__typename": "SetPixelResponseMessageData"
+          },
+          "__typename": "BasicMessage"
+        }
       ],
-      "extensions": {
-        "nextAvailablePixelTs": 1690099533000
-      }
-    },
-    {
-      "message": "ratelimit hit, next available: 1690099533000",
-      "path": [
-        "act"
-      ]
+      "__typename": "ActResponse"
     }
-  ],
-  "data": null
+  }
 }
