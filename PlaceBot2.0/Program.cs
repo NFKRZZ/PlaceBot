@@ -10,9 +10,9 @@ namespace PlaceBot2._0
         static void Main(string[] args)
         {
             int thread_delay = 1;
-            //THESE COORDS ARE WHAT YOU SEE ON r/place in browser
+            //THESE COORDS ARE WHAT YOU SEE ON r/ place in browser
             int startX = 0;
-            int startY = 2;
+            int startY = 0;
             string userfilePath = "accounts.txt"; //create your own
             string proxyFilePath = "proxy.txt"; //create your own
             List<string[]> userList = getUser(userfilePath);
@@ -24,17 +24,17 @@ namespace PlaceBot2._0
             int k = 0;
             foreach (string[] a in userList)
             {
-                if(k>=proxyList.Count-1)
+                if (k >= proxyList.Count - 1)
                 {
-                    k= 0;
+                    k = 0;
                 }
                 botlist.Add(new RedditPlaceWorker(i, a[0], a[1], proxyList[k], bitmap, startX, startY));
                 k++;
                 i++;
             }
-            Console.WriteLine("Botlist Size = "+botlist.Count);
+            Console.WriteLine("Botlist Size = " + botlist.Count);
             List<Thread> threadlist = new List<Thread>();
-            foreach(RedditPlaceWorker worker in botlist)
+            foreach (RedditPlaceWorker worker in botlist)
             {
                 Thread t = new Thread(() => worker.Init());
                 t.Start();
@@ -42,8 +42,30 @@ namespace PlaceBot2._0
                 Thread.Sleep(thread_delay * 1000);
             }
 
+            while (true)
+            {
+                foreach (RedditPlaceWorker bot in botlist)
+                {
+                    if (bot.isThreadBanned())
+                    {
+                        try
+                        {
+                            int index = bot.getIndex();
+                            Console.WriteLine("Aborted Thread: #" + index + " user = " + bot.getName() + " due to rateLimit");
+                            threadlist[index].Abort();
+                            Console.WriteLine("Aborted");
+                        }
+                        catch(Exception e)
+                        {
+                            Console.WriteLine(e.ToString());
+                        }
 
+                    }
+                    //Thread.Sleep(400);
 
+                }
+                Thread.Sleep(500);
+            }
 
 
         }

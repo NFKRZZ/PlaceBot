@@ -55,6 +55,7 @@ namespace PlaceBot2._0
         private int y_length;
         private int timeOut = 0;
         private bool running = false;
+        private bool threadBanned = false;
 
 
 
@@ -90,7 +91,7 @@ namespace PlaceBot2._0
             client = new HttpClient(handler);
             Login(name, password);
             boardImage =  getBoard(accessToken).Result;
-          //  boardImage.Save("hello.jpg",System.Drawing.Imaging.ImageFormat.Jpeg);
+            //boardImage.Save("hello.jpg",System.Drawing.Imaging.ImageFormat.Jpeg);
 
 
             Loop();
@@ -108,43 +109,58 @@ namespace PlaceBot2._0
 
             while (true)
             {
-                Color currentLocationColor = sourceImage.GetPixel(localX, localY);
-                if (checkifPlacePixel(localX, localY, currentLocationColor))
+                if (!threadBanned)
                 {
-                    Task.Run(() => placePixel(currentLocationColor, localX, localY));
-                    running = true;
-                    while(running)
+                    Color currentLocationColor;
+                    lock (sourceImage)
                     {
-                        if(!running)
-                        {
-                            //THIS FORCES PLACEPIXEL TO COMPLETE ITS EXECUTION BEFORE MOVING ON SINCE RUNNING = FALSE AT THE END OF PLACEPIXEL()
-                            break;
-                        }
+                        currentLocationColor = sourceImage.GetPixel(localX, localY);
                     }
-                   // Console.WriteLine("Done");
-                    localX++;
-                    Thread.Sleep(timeOut * 1000);
-                    timeOut = 0;
+                    Thread.Sleep(100);
+                    if (checkifPlacePixel(localX, localY, currentLocationColor))
+                    {
+                        Thread.Sleep(100);
+                        Task.Run(() => placePixel(currentLocationColor, localX, localY));
+                        running = true;
+                        while (running)
+                        {
+                            if (!running)
+                            {
+                                Thread.Sleep(10);
+                                //THIS FORCES PLACEPIXEL TO COMPLETE ITS EXECUTION BEFORE MOVING ON SINCE RUNNING = FALSE AT THE END OF PLACEPIXEL()
+                                break;
+                            }
+                        }
+                        // Console.WriteLine("Done");
+                        localX++;
+                        Thread.Sleep(timeOut * 1000);
+                        timeOut = 0;
+                    }
+                    else
+                    {
+                        localX++;
+                    }
+
+                    if (localX > x_length)
+                    {
+                        localX = 0;
+                        localY++;
+                    }
+                    if (localY > y_length)
+                    {
+                        localY = 0;
+                    }
+
+
+                    Thread.Sleep(500);
+                    //Console.WriteLine("Checking Board");
+                    boardImage = getBoard(accessToken).Result;
+                    Thread.Sleep(100);
                 }
                 else
                 {
-                    localX++;
+                    Thread.Sleep(10000);
                 }
-
-                if(localX>x_length)
-                {
-                    localX = 0;
-                    localY++;
-                }
-                if(localY>y_length)
-                {
-                    localY = 0;
-                }
-
-                
-                Thread.Sleep(500);
-                //Console.WriteLine("Checking Board");
-                boardImage = getBoard(accessToken).Result;
             }
 
 
@@ -164,9 +180,15 @@ namespace PlaceBot2._0
             int redditX = cX + localX;
             int redditY = cY + localY;
 
-            int canvas_index = getCanvas(cX + localX + 1000, cY + localY + 1000);
-            Console.WriteLine(name + " is attempting to place pixel at [" + redditX + "," + redditY + "] with color "+colorstr);
+            
 
+
+
+            int canvas_index = getCanvas(cX + localX + 1000, cY + localY + 1000);
+            int[] redd = getRedditCoord(redditX, redditY,canvas_index);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("Worker Thread #"+index+": "+name + " is attempting to place pixel at [" + redd[0] + "," + redd[1] + "] with color "+colorstr+" color ID: "+colorID+" canvas_ID: "+canvas_index);
+            Console.ForegroundColor = ConsoleColor.Gray;
             var payloadObj = new
             {
                 operationName = "setPixel",
@@ -177,7 +199,7 @@ namespace PlaceBot2._0
                         actionName = "r/replace:set_pixel",
                         PixelMessageData = new
                         {
-                            coordinate = new { x = redditX, y = redditY },
+                            coordinate = new { x = redd[0], y = redd[1] },
                             colorIndex = colorID,
                             canvasIndex = canvas_index
                         }
@@ -252,8 +274,12 @@ namespace PlaceBot2._0
                 try
                 {
                     int waitTime = (int)Math.Floor(responseJson["errors"][0]["extensions"]["nextAvailablePixelTs"].Value<double>());
-                    Console.WriteLine(name + "couldnt place, ratelimited for " + waitTime + " seconds");
-                    timeOut = Math.Abs(waitTime);
+
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    threadBanned = true;
+                    Console.WriteLine("Worker Thread: #"+index+" "+name + " couldnt place, ratelimited for " + waitTime + " seconds");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    timeOut = Math.Abs(waitTime)/10000;
                 }
                 catch (Exception ex)
                 {
@@ -267,11 +293,11 @@ namespace PlaceBot2._0
             else
             {
                // Console.WriteLine(responseJson["data"].ToString());
-                File.WriteAllText("fuck.txt",responseJson.ToString());
+               //h File.WriteAllText("fuck.txt",responseJson.ToString());
                 int waitTime = (int)Math.Floor(responseJson["data"]["act"]["data"][0]["data"]["nextAvailablePixelTimestamp"].Value<double>());
                 timeOut = 310;
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine(name + " succeeded in placing the pixel");
+                Console.WriteLine("Worker Thread: #"+index+" "+name + " succeeded in placing the pixel at x: " + redd[0] +" y: " + redd[1] );
                 Console.ForegroundColor = ConsoleColor.Gray;
                 Console.WriteLine("this is timeout: " + timeOut + " seconds");
 
@@ -282,14 +308,31 @@ namespace PlaceBot2._0
         {
             int imgX = cX+x + 1000;
             int imgY = cY+y + 1000;
-
             Color pixelColor = boardImage.GetPixel(imgX, imgY);
 
 
             Color sourcePicturePixelColor = ColorMapperz.ClosestColor(color, cArray, true);
 
+            
+
+
             bool isSame = (string.Equals(pixelColor.Name, sourcePicturePixelColor.Name, StringComparison.OrdinalIgnoreCase));
-          //  Console.WriteLine("They are the same: " + isSame);
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("Worker Thread: #"+index+" "+name+" Checking Color at x: " + imgX + " y: " + imgY + ", it is " + pixelColor.Name + " , the source color is " + sourcePicturePixelColor.Name+" Is it going to place? :");
+            if (!isSame == true)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write(!isSame +", since current color is "+ColorMapperz.ColorIdToName(ColorMapperz.getIntFromColor(pixelColor))+" and the desired color is "+ ColorMapperz.ColorIdToName(ColorMapperz.getIntFromColor(sourcePicturePixelColor)) + "\n");
+            }
+            else
+            {
+                Console.ForegroundColor= ConsoleColor.Red;
+                Console.Write(!isSame + ", since current color is " + ColorMapperz.ColorIdToName(ColorMapperz.getIntFromColor(pixelColor)) + " and the desired color is " + ColorMapperz.ColorIdToName(ColorMapperz.getIntFromColor(sourcePicturePixelColor)) + "\n");
+            }
+            Console.ForegroundColor = ConsoleColor.Gray;
+
+            //  Console.WriteLine("They are the same: " + isSame);
             //need to implement transparency 
 
 
@@ -405,7 +448,7 @@ namespace PlaceBot2._0
                 catch (Exception e)
                 {
                     Console.WriteLine("Failed to connect, trying again in 30 seconds...");
-                    Console.WriteLine("this is the exception " + e);
+                    Console.WriteLine("Worker Thread: #"+index+" "+name+" this is the exception " + e);
                     Thread.Sleep(30000);
                 }
             }
@@ -440,7 +483,7 @@ namespace PlaceBot2._0
                     }
                     catch(Exception e)
                     {
-                        Console.WriteLine("Failed to Connect to WebSocket, trying again in 30 seconds.. "+e);
+                        Console.WriteLine("Worker Thread: #"+index+" "+name+" Failed to Connect to WebSocket, trying again in 30 seconds.. "+e);
                         await Task.Delay(30000);
                     }
                 }
@@ -660,8 +703,14 @@ namespace PlaceBot2._0
             }
 
             //Console.WriteLine("Getting Canvas");
-            Rectangle cropArea = new Rectangle(500, 0, 2500 - 500, 1500 - 0);
+            //finalImg.Save("hello.jpg", ImageFormat.Jpeg);
+            Rectangle cropArea = new Rectangle(500, 0, 2500 - 500, 2000 - 0);
             Bitmap cropped = finalImg.Clone(cropArea,finalImg.PixelFormat);
+            finalImg.Dispose();
+            canvas_details.RemoveAll();
+            canvas_sockets.Clear();
+            imgs.Clear();
+            //cropped.Save("cropped.jpg", ImageFormat.Jpeg);
             return cropped;
         }
         
@@ -697,9 +746,55 @@ namespace PlaceBot2._0
             {
                 Console.WriteLine("THIS IS NOT SUPPOSED TO PRINT IF IT DOES SOMETHING IS WRONG IN getCanvas()");
             }
-            Console.WriteLine("GET CANVAS CALLED RETURNING: " + canvas);
+         //   Console.WriteLine("GET CANVAS CALLED RETURNING: " + canvas);
             return canvas;
         }
 
+        int[] getRedditCoord(int x, int y, int canvas_index)
+        {
+            if(canvas_index==0)
+            {
+                x = x+1500;
+                y = y+1000;
+            }
+            else if(canvas_index==1)
+            {
+                x = x + 500;
+                y = y + 1000;
+            }
+            else if(canvas_index==2)
+            {
+                x = x - 500;
+                y = y + 1000;
+            }
+            else if(canvas_index==3)
+            {
+                x = x + 1500;
+                y = y+0;
+            }
+            else if(canvas_index==4)
+            {
+                x = x + 500;
+                y = y+0;
+            }
+            else if (canvas_index == 5)
+            {
+                x = x-500;
+                y = y+0;
+            }
+            return new int[] {x,y};
+
+
+        }
+        public bool isThreadBanned()
+        {
+            return threadBanned;
+        }
+        public int getIndex()
+        {
+            return index;
+        }
+        public string getName()
+        { return name; }
     }
 }
