@@ -90,7 +90,7 @@ namespace PlaceBot2._0
             client = new HttpClient(handler);
             Login(name, password);
             boardImage =  getBoard(accessToken).Result;
-            boardImage.Save("hello.jpg",System.Drawing.Imaging.ImageFormat.Jpeg);
+          //  boardImage.Save("hello.jpg",System.Drawing.Imaging.ImageFormat.Jpeg);
 
 
             Loop();
@@ -121,7 +121,7 @@ namespace PlaceBot2._0
                             break;
                         }
                     }
-                    Console.WriteLine("Done");
+                   // Console.WriteLine("Done");
                     localX++;
                     Thread.Sleep(timeOut * 1000);
                     timeOut = 0;
@@ -143,7 +143,7 @@ namespace PlaceBot2._0
 
                 
                 Thread.Sleep(500);
-                Console.WriteLine("Checking Board");
+                //Console.WriteLine("Checking Board");
                 boardImage = getBoard(accessToken).Result;
             }
 
@@ -247,7 +247,7 @@ namespace PlaceBot2._0
 
             JObject responseJson = JObject.Parse(responseContent);
 
-            if (responseJson["data"].Equals(null) || responseJson["data"].Equals("null") || responseJson["data"] is null)
+            if (responseJson["data"].Type==JTokenType.Null)
             {
                 try
                 {
@@ -266,12 +266,15 @@ namespace PlaceBot2._0
             }
             else
             {
-                Console.WriteLine(responseJson["data"].ToString());
+               // Console.WriteLine(responseJson["data"].ToString());
                 File.WriteAllText("fuck.txt",responseJson.ToString());
                 int waitTime = (int)Math.Floor(responseJson["data"]["act"]["data"][0]["data"]["nextAvailablePixelTimestamp"].Value<double>());
                 timeOut = 310;
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine(name + " succeeded in placing the pixel");
+                Console.ForegroundColor = ConsoleColor.Gray;
                 Console.WriteLine("this is timeout: " + timeOut + " seconds");
+
             }
             running = false;
         }
@@ -286,7 +289,7 @@ namespace PlaceBot2._0
             Color sourcePicturePixelColor = ColorMapperz.ClosestColor(color, cArray, true);
 
             bool isSame = (string.Equals(pixelColor.Name, sourcePicturePixelColor.Name, StringComparison.OrdinalIgnoreCase));
-            Console.WriteLine("They are the same: " + isSame);
+          //  Console.WriteLine("They are the same: " + isSame);
             //need to implement transparency 
 
 
@@ -363,7 +366,7 @@ namespace PlaceBot2._0
 
                     int accessTokenStartIndex = accessTokenContent.IndexOf(startTag);
                     int accessTokenEndIndex = accessTokenContent.IndexOf(endTag, accessTokenStartIndex);
-                    Console.WriteLine("THIS IS START: " + accessTokenStartIndex + " THIS IS END " + accessTokenEndIndex);
+                  // Console.WriteLine("THIS IS START: " + accessTokenStartIndex + " THIS IS END " + accessTokenEndIndex);
                     if (accessTokenStartIndex != -1 && accessTokenEndIndex != -1)
                     {
                        // Console.WriteLine("Great!");
@@ -394,7 +397,7 @@ namespace PlaceBot2._0
                     var current_timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                     access_token_expires_at_timestamp = current_timestamp + access_token_expires_in_seconds;
                     
-                        Console.WriteLine($"Received new access token: {accessToken.Substring(0, 5)}************");
+                     //   Console.WriteLine($"Received new access token: {accessToken.Substring(0, 5)}************");
                     
 
                     break;
@@ -424,7 +427,7 @@ namespace PlaceBot2._0
                         ws.Options.RemoteCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) => true;
                         ws.Options.SetRequestHeader("Origin", "https://hot-potato.reddit.com");
                         await ws.ConnectAsync(new Uri("wss://gql-realtime-2.reddit.com/query"), CancellationToken.None);
-                        Console.WriteLine("Connection Succeeded");
+                      //  Console.WriteLine("Connection Succeeded");
 
                         var jsonToken = new
                         {
@@ -447,15 +450,15 @@ namespace PlaceBot2._0
                     {
                         var buffer = new byte[1024];
                         var result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                        Console.WriteLine("Result size "+result.Count);
-                        Console.WriteLine("This is result: "+result.ToString());
+                      //  Console.WriteLine("Result size "+result.Count);
+                       // Console.WriteLine("This is result: "+result.ToString());
                         if(result.MessageType == WebSocketMessageType.Close)
                         {
                             Console.WriteLine("Web Socket Closed");
                             throw new Exception("WEB SOCKET CLOSED");
                         }
                         var messagee = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                        Console.WriteLine("Recieved message " + messagee);
+                        //Console.WriteLine("Recieved message " + messagee);
                         break;
                     }
                     catch(Exception e)
@@ -503,7 +506,7 @@ namespace PlaceBot2._0
                 {
                     var buffer = new byte[8192];
                     var result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                    Console.WriteLine("result is size "+result.Count);
+                  //  Console.WriteLine("result is size "+result.Count);
                     var mseg = Encoding.UTF8.GetString(buffer, 0, result.Count);
                     JObject l = JObject.Parse(mseg);
                     //Console.WriteLine("This is l "+l.ToString());
@@ -559,7 +562,7 @@ namespace PlaceBot2._0
 
                 }
 
-                Console.WriteLine("A total of " + canvas_sockets.Count + " canvas sockets openend");
+                //Console.WriteLine("A total of " + canvas_sockets.Count + " canvas sockets openend");
 
                 while (canvas_sockets.Count > 0)
                 {
@@ -602,7 +605,7 @@ namespace PlaceBot2._0
                                         }
                                         Bitmap imgBitmap = new Bitmap(bitmap);
                                         string path = "hello" + img_id + ".jpg";
-                                        imgBitmap.Save(path, System.Drawing.Imaging.ImageFormat.Jpeg);
+                                        //imgBitmap.Save(path, System.Drawing.Imaging.ImageFormat.Jpeg);
                                         imgs.Add(new Tuple<int, Bitmap>(img_id, imgBitmap));
                                         canvas_sockets.Remove(img_id);
                                       
@@ -630,10 +633,10 @@ namespace PlaceBot2._0
                 }
                 await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None);
                 int new_img_width = canvas_details["canvasConfigurations"].Max(x => (int)x["dx"]) + (int)canvas_details["canvasWidth"];
-                Console.WriteLine($"New image width: {new_img_width}");
+                //Console.WriteLine($"New image width: {new_img_width}");
 
                 int new_img_height = canvas_details["canvasConfigurations"].Max(x => (int)x["dy"]) + (int)canvas_details["canvasHeight"];
-                Console.WriteLine($"New image height: {new_img_height}");
+                //Console.WriteLine($"New image height: {new_img_height}");
                 Bitmap new_img = new Bitmap(new_img_width, new_img_height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
                 foreach (var img in imgs.OrderBy(x => x.Item1))
                 {
@@ -656,7 +659,7 @@ namespace PlaceBot2._0
                 Console.WriteLine("EXCEPTION " + e);
             }
 
-            Console.WriteLine("Getting Canvas");
+            //Console.WriteLine("Getting Canvas");
             Rectangle cropArea = new Rectangle(500, 0, 2500 - 500, 1500 - 0);
             Bitmap cropped = finalImg.Clone(cropArea,finalImg.PixelFormat);
             return cropped;
@@ -694,7 +697,7 @@ namespace PlaceBot2._0
             {
                 Console.WriteLine("THIS IS NOT SUPPOSED TO PRINT IF IT DOES SOMETHING IS WRONG IN getCanvas()");
             }
-
+            Console.WriteLine("GET CANVAS CALLED RETURNING: " + canvas);
             return canvas;
         }
 

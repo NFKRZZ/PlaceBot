@@ -3,17 +3,17 @@
     "act": {
       "data": [
         {
-          "id": "f5efec63-fa4c-4325-85a1-9fdd7a3a17b7",
+          "id": "b01baf32-9bc2-40c8-ab1e-9d8f775e9ab0",
           "data": {
-            "nextAvailablePixelTimestamp": 1690102125000.0,
+            "nextAvailablePixelTimestamp": 1690106431000.0,
             "__typename": "GetUserCooldownResponseMessageData"
           },
           "__typename": "BasicMessage"
         },
         {
-          "id": "e9ab4d6b-1227-4a30-9f0f-24ae2e41cdb8",
+          "id": "0b5437e3-50d5-48b9-ad4b-0fbe43d9572a",
           "data": {
-            "timestamp": 1690101825203.0,
+            "timestamp": 1690106131201.0,
             "__typename": "SetPixelResponseMessageData"
           },
           "__typename": "BasicMessage"

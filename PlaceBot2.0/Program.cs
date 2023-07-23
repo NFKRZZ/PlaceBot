@@ -9,21 +9,42 @@ namespace PlaceBot2._0
     {
         static void Main(string[] args)
         {
-
+            int thread_delay = 3;
             //THESE COORDS ARE WHAT YOU SEE ON r/place in browser
             int startX = 0;
-            int startY = 0;
-            string userfilePath = "PUT PATH HERE";
-            string proxyFilePath = "PUT PATH HERE";
-            //List<string[]> userList = getUser(userfilePath);
-            //List<string> proxyList = getProxy(proxyFilePath);
+            int startY = 2;
+            string userfilePath = "accounts.txt"; //create your own
+            string proxyFilePath = "proxy.txt"; //create your own
+            List<string[]> userList = getUser(userfilePath);
+            List<string> proxyList = getProxy(proxyFilePath);
             List<RedditPlaceWorker> botlist = new List<RedditPlaceWorker>();
-            string imagePath = "image.jpg";
+            string imagePath = "russia.png";
             Bitmap bitmap = new Bitmap(imagePath);
-            botlist.Add(new RedditPlaceWorker(1, "Kings55328", "Kthenurse.123", "45.9.16.138:5136",bitmap,startX,startY));
+            int i = 0;
+            int k = 0;
+            foreach (string[] a in userList)
+            {
+                if(k>=proxyList.Count-1)
+                {
+                    k= 0;
+                }
+                botlist.Add(new RedditPlaceWorker(i, a[0], a[1], proxyList[k], bitmap, startX, startY));
+                k++;
+                i++;
+            }
             Console.WriteLine("Botlist Size = "+botlist.Count);
             List<Thread> threadlist = new List<Thread>();
-            botlist[0].Init();
+            foreach(RedditPlaceWorker worker in botlist)
+            {
+                Thread t = new Thread(() => worker.Init());
+                t.Start();
+                threadlist.Add(t);
+                Thread.Sleep(thread_delay * 1000);
+            }
+
+
+
+
 
         }
 
