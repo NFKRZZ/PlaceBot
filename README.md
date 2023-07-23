@@ -1,5 +1,5 @@
 
-# Project Title
+# Reddit Place Bot 2023 r/place
 
  Reddit Place Bot in C Sharp <br />
  This supports multithreading and proxies  <br />
