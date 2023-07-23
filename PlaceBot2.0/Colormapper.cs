@@ -9,7 +9,7 @@ namespace PlaceBot2._0
 {
     public class ColorMapperz
     {
-        private static readonly Dictionary<string, int> COLOR_MAP = new Dictionary<string, int>
+        public static readonly Dictionary<string, int> COLOR_MAP = new Dictionary<string, int>
     {
         { "#FF4500", 2 },   // red
         { "#FFA800", 3 },   // orange T
@@ -29,7 +29,7 @@ namespace PlaceBot2._0
         { "#FFFFFF", 31 },  // white, T
     };
 
-        private static readonly Dictionary<int, string> NAME_MAP = new Dictionary<int, string>
+        public static readonly Dictionary<int, string> NAME_MAP = new Dictionary<int, string>
     {
         { 2, "Red" },
         { 3, "Orange" },
@@ -122,6 +122,34 @@ namespace PlaceBot2._0
             // Create the Color object
             Color color = Color.FromArgb(red, green, blue);
             return color;
+        }
+        static double CalculateColorDistance(Color color1, Color color2)
+        {
+            int dr = color2.R - color1.R;
+            int dg = color2.G - color1.G;
+            int db = color2.B - color1.B;
+
+            return Math.Sqrt(dr * dr + dg * dg + db * db);
+        }
+        public static int getIntFromColor(Color c)
+        {
+            Color inputRgbColor = c;
+            double minDistance = double.MaxValue;
+            int closestColorId = -1;
+
+            foreach (var kvp in COLOR_MAP)
+            {
+                Color mapColor = ColorTranslator.FromHtml(kvp.Key);
+                double distance = CalculateColorDistance(inputRgbColor, mapColor);
+
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    closestColorId = kvp.Value;
+                }
+            }
+
+            return closestColorId;
         }
     }
 }

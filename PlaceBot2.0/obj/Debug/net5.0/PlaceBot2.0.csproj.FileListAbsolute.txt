@@ -3,9 +3,7 @@ C:\Users\winga\source\repos\PlaceBot2.0\PlaceBot2.0\bin\Debug\net5.0\PlaceBot2.0
 C:\Users\winga\source\repos\PlaceBot2.0\PlaceBot2.0\bin\Debug\net5.0\PlaceBot2.0.runtimeconfig.json
 C:\Users\winga\source\repos\PlaceBot2.0\PlaceBot2.0\bin\Debug\net5.0\PlaceBot2.0.runtimeconfig.dev.json
 C:\Users\winga\source\repos\PlaceBot2.0\PlaceBot2.0\bin\Debug\net5.0\PlaceBot2.0.dll
-C:\Users\winga\source\repos\PlaceBot2.0\PlaceBot2.0\bin\Debug\net5.0\ref\PlaceBot2.0.dll
 C:\Users\winga\source\repos\PlaceBot2.0\PlaceBot2.0\bin\Debug\net5.0\PlaceBot2.0.pdb
-C:\Users\winga\source\repos\PlaceBot2.0\PlaceBot2.0\obj\Debug\net5.0\PlaceBot2.0.csproj.AssemblyReference.cache
 C:\Users\winga\source\repos\PlaceBot2.0\PlaceBot2.0\obj\Debug\net5.0\PlaceBot2.0.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\winga\source\repos\PlaceBot2.0\PlaceBot2.0\obj\Debug\net5.0\PlaceBot2.0.AssemblyInfoInputs.cache
 C:\Users\winga\source\repos\PlaceBot2.0\PlaceBot2.0\obj\Debug\net5.0\PlaceBot2.0.AssemblyInfo.cs
@@ -27,3 +25,5 @@ C:\Users\winga\source\repos\PlaceBot2.0\PlaceBot2.0\bin\Debug\net5.0\pythonnet\r
 C:\Users\winga\source\repos\PlaceBot2.0\PlaceBot2.0\bin\Debug\net5.0\pythonnet\runtime\Python.Runtime.dll
 C:\Users\winga\source\repos\PlaceBot2.0\PlaceBot2.0\bin\Debug\net5.0\pythonnet\runtime\Python.Runtime.pdb
 C:\Users\winga\source\repos\PlaceBot2.0\PlaceBot2.0\bin\Debug\net5.0\pythonnet\util\__init__.py
+C:\Users\winga\source\repos\PlaceBot2.0\PlaceBot2.0\obj\Debug\net5.0\PlaceBot2.0.csproj.AssemblyReference.cache
+C:\Users\winga\source\repos\PlaceBot2.0\PlaceBot2.0\obj\Debug\net5.0\refint\PlaceBot2.0.dll

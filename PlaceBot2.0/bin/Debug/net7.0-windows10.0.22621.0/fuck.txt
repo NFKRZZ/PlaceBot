@@ -1,0 +1,20 @@
+{
+  "errors": [
+    {
+      "message": "Ratelimited",
+      "path": [
+        "act"
+      ],
+      "extensions": {
+        "nextAvailablePixelTs": 1690099533000
+      }
+    },
+    {
+      "message": "ratelimit hit, next available: 1690099533000",
+      "path": [
+        "act"
+      ]
+    }
+  ],
+  "data": null
+}
