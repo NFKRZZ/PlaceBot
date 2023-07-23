@@ -159,7 +159,7 @@ namespace PlaceBot2._0
                 }
                 else
                 {
-                    Thread.Sleep(10000);
+                    Thread.Sleep(100000);
                 }
             }
 
@@ -391,7 +391,7 @@ namespace PlaceBot2._0
                     }
                     else
                     {
-                        Console.WriteLine($"{username} - Authorization successful!");
+                        Console.WriteLine("Worker Thread: #"+index +" "+$"{username} - Authorization successful!");
                     }
 
                     // Obtain access token

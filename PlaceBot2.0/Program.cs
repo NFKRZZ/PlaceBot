@@ -41,7 +41,15 @@ namespace PlaceBot2._0
                 threadlist.Add(t);
                 Thread.Sleep(thread_delay * 1000);
             }
-
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("FINISHED LOGGING INTO ALL THE REDDIT ACCOUNTS!!!!!!!!!!!!!!!!!!!!!!!!!");
+            Console.WriteLine("FINISHED LOGGING INTO ALL THE REDDIT ACCOUNTS!!!!!!!!!!!!!!!!!!!!!!!!!");
+            Console.WriteLine("FINISHED LOGGING INTO ALL THE REDDIT ACCOUNTS!!!!!!!!!!!!!!!!!!!!!!!!!");
+            Console.WriteLine("FINISHED LOGGING INTO ALL THE REDDIT ACCOUNTS!!!!!!!!!!!!!!!!!!!!!!!!!");
+            Console.WriteLine("FINISHED LOGGING INTO ALL THE REDDIT ACCOUNTS!!!!!!!!!!!!!!!!!!!!!!!!!");
+            Console.WriteLine("FINISHED LOGGING INTO ALL THE REDDIT ACCOUNTS!!!!!!!!!!!!!!!!!!!!!!!!!");
+            Console.WriteLine("FINISHED LOGGING INTO ALL THE REDDIT ACCOUNTS!!!!!!!!!!!!!!!!!!!!!!!!!");
+            Console.ForegroundColor = ConsoleColor.Gray;
             while (true)
             {
                 foreach (RedditPlaceWorker bot in botlist)
@@ -52,7 +60,7 @@ namespace PlaceBot2._0
                         {
                             int index = bot.getIndex();
                             Console.WriteLine("Aborted Thread: #" + index + " user = " + bot.getName() + " due to rateLimit");
-                            threadlist[index].Abort();
+                            //threadlist[index].Abort();
                             Console.WriteLine("Aborted");
                         }
                         catch(Exception e)
