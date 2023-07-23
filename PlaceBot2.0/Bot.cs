@@ -352,7 +352,7 @@ namespace PlaceBot2._0
                     }
 
                     // Obtain access token
-                    Console.WriteLine("Obtaining access token...");
+                   // Console.WriteLine("Obtaining access token...");
                     var accessTokenResponse = client.GetAsync("https://new.reddit.com/").Result;
                     var accessTokenContent = accessTokenResponse.Content.ReadAsStringAsync().Result;
                     //File.WriteAllText("access_token_response.txt", accessTokenContent);
@@ -519,7 +519,7 @@ namespace PlaceBot2._0
                     }
                     else
                     {
-                        Console.WriteLine("Waiting");
+                        //Console.WriteLine("Waiting");
                     }
                 }
 
