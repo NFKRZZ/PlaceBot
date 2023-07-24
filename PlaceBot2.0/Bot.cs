@@ -582,13 +582,21 @@ namespace PlaceBot2._0
                 while(true)
                 {
                     var buffer = new byte[8192];
-                    var result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                  //  Console.WriteLine("result is size "+result.Count);
-                    var mseg = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                    StringBuilder sb = new StringBuilder();
+                    WebSocketReceiveResult result;
+                    do
+                    {
+                        result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                        sb.Append(Encoding.UTF8.GetString(buffer,0, result.Count));
+
+                    } while (!result.EndOfMessage);
+
+
+                    //Console.WriteLine(getTime() + " Worker Thread: #" + index + " " + name + " is this the end? " + result.EndOfMessage);
+                    var mseg  = sb.ToString();
+                    //File.WriteAllText("wtfis.txt", mseg);
                     JObject l = JObject.Parse(mseg);
-                    //Console.WriteLine("This is l "+l.ToString());
-                    //Console.WriteLine("This is size " + mseg.Length);
-                    if(l["type"].ToString()=="data")
+                    if(l["type"].ToString()=="data" ) 
                     {
                         canvas_details = l["payload"]["data"]["subscribe"]["data"].ToObject<JObject>();
                         //Console.WriteLine("Canvas config: " + l.ToString());
@@ -596,12 +604,11 @@ namespace PlaceBot2._0
                     }
                     else
                     {
-                        //Console.WriteLine("Waiting");
+                        Console.WriteLine("Waiting");
                     }
                 }
 
                 int canvas_count = ((JArray)canvas_details["canvasConfigurations"]).Count;
-                
                 for(int i = 0;i<canvas_count;i++)
                 {
                     canvas_sockets.Add(2 + i);
@@ -646,7 +653,7 @@ namespace PlaceBot2._0
                     var buffer = new byte[1024];
                     var result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                     var messy = Encoding.UTF8.GetString(buffer, 0, result.Count);
-
+                    File.WriteAllText("mess.txt", messy);
                     JObject temp = JObject.Parse(messy);
 
                     if (temp["type"].ToString() == "data")
@@ -733,12 +740,12 @@ namespace PlaceBot2._0
             }
             catch (Exception e)
             {
-                Console.WriteLine("EXCEPTION " + e);
+                Console.WriteLine(getTime()+"Worker Thread: #"+index+" "+name+" EXCEPTION " + e);
             }
 
             //Console.WriteLine("Getting Canvas");
             //finalImg.Save("hello.jpg", ImageFormat.Jpeg);
-            Rectangle cropArea = new Rectangle(0, 0, 2500, 2000 - 0);
+            Rectangle cropArea = new Rectangle(0, 0, 3000, 2000 - 0);
             Bitmap cropped = finalImg.Clone(cropArea,finalImg.PixelFormat);
             finalImg.Dispose();
             canvas_details.RemoveAll();

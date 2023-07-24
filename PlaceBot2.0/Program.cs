@@ -11,14 +11,14 @@ namespace PlaceBot2._0
         {
             int thread_delay = 2501;
             //THESE COORDS ARE WHAT YOU SEE ON r/ place in browser
-            int startX = -1479;
-            int startY = 407;
+            int startX = 1483;
+            int startY = 452;
             string userfilePath = "accounts.txt"; //create your own
             string proxyFilePath = "proxy.txt"; //create your own
             List<string[]> userList = getUser(userfilePath);
             List<string> proxyList = getProxy(proxyFilePath);
             List<RedditPlaceWorker> botlist = new List<RedditPlaceWorker>();
-            string imagePath = "russiasmoll.png";
+            string imagePath = "";
             Bitmap bitmap = new Bitmap(imagePath);
             int i = 0;
             int k = 0;

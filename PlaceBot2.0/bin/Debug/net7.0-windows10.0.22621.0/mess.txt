@@ -1,0 +1,1 @@
+{"payload":{"data":{"subscribe":{"id":"6748afde-ff72-40ef-addd-cd7332a81853","data":{"__typename":"FullFrameMessageData","__typename":"FullFrameMessageData","name":"https://garlic-bread.reddit.com/media/canvas-images/full-frame/3/1690227816513-3-f-vqYDphSv.png","timestamp":1.690227816513e+12},"__typename":"BasicMessage","__typename":"BasicMessage"}}},"id":"5","type":"data"}
