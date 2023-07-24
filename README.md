@@ -20,3 +20,6 @@ for ex:
 # How to load Bots
 
 Same as above with the following format username:password
+
+# Warning
+This may take up a lot of RAM, 450 accounts =~ 20 GB of RAM usage
