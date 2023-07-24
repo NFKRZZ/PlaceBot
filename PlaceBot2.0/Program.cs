@@ -18,7 +18,7 @@ namespace PlaceBot2._0
             List<string[]> userList = getUser(userfilePath);
             List<string> proxyList = getProxy(proxyFilePath);
             List<RedditPlaceWorker> botlist = new List<RedditPlaceWorker>();
-            string imagePath = "russia.png";
+            string imagePath = "";
             Bitmap bitmap = new Bitmap(imagePath);
             int i = 0;
             int k = 0;
