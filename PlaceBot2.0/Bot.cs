@@ -56,6 +56,7 @@ namespace PlaceBot2._0
         private int timeOut = 0;
         private bool running = false;
         private bool threadBanned = false;
+        private bool isBanned = false;
 
 
 
@@ -141,12 +142,12 @@ namespace PlaceBot2._0
                         localX++;
                     }
 
-                    if (localX > x_length)
+                    if (localX > x_length-1)
                     {
                         localX = 0;
                         localY++;
                     }
-                    if (localY > y_length)
+                    if (localY > y_length-1)
                     {
                         localY = 0;
                     }
@@ -184,10 +185,10 @@ namespace PlaceBot2._0
 
 
 
-            int canvas_index = getCanvas(cX + localX + 1000, cY + localY + 1000);
+            int canvas_index = getCanvas(cX + localX + 1500, cY + localY + 1000);
             int[] redd = getRedditCoord(redditX, redditY,canvas_index);
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("Worker Thread #"+index+": "+name + " is attempting to place pixel at [" + redd[0] + "," + redd[1] + "] with color "+colorstr+" color ID: "+colorID+" canvas_ID: "+canvas_index);
+            Console.WriteLine(getTime()+" Worker Thread #"+index+": "+name + " is attempting to place pixel at [" + redditX + "," + redditY + "] with color "+colorstr+" color ID: "+colorID+" canvas_ID: "+canvas_index);
             Console.ForegroundColor = ConsoleColor.Gray;
             var payloadObj = new
             {
@@ -277,7 +278,7 @@ namespace PlaceBot2._0
 
                     Console.ForegroundColor = ConsoleColor.Red;
                     threadBanned = true;
-                    Console.WriteLine("Worker Thread: #"+index+" "+name + " couldnt place, ratelimited for " + waitTime + " seconds");
+                    Console.WriteLine(getTime()+" Worker Thread: #"+index+" "+name + " couldnt place, ratelimited for " + waitTime + " seconds");
                     Console.ForegroundColor = ConsoleColor.Gray;
                     timeOut = Math.Abs(waitTime)/10000;
                 }
@@ -297,7 +298,7 @@ namespace PlaceBot2._0
                 int waitTime = (int)Math.Floor(responseJson["data"]["act"]["data"][0]["data"]["nextAvailablePixelTimestamp"].Value<double>());
                 timeOut = 310;
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Worker Thread: #"+index+" "+name + " succeeded in placing the pixel at x: " + redd[0] +" y: " + redd[1] );
+                Console.WriteLine(getTime()+" Worker Thread: #"+index+" "+name + " succeeded in placing the pixel at x: " + redditX +" y: " + redditY );
                 Console.ForegroundColor = ConsoleColor.Gray;
                 Console.WriteLine("this is timeout: " + timeOut + " seconds");
 
@@ -306,7 +307,7 @@ namespace PlaceBot2._0
         }
         bool checkifPlacePixel(int x, int y, Color color)
         {
-            int imgX = cX+x + 1000;
+            int imgX = cX+x + 1500;
             int imgY = cY+y + 1000;
             Color pixelColor = boardImage.GetPixel(imgX, imgY);
 
@@ -319,7 +320,7 @@ namespace PlaceBot2._0
             bool isSame = (string.Equals(pixelColor.Name, sourcePicturePixelColor.Name, StringComparison.OrdinalIgnoreCase));
 
             Console.ForegroundColor = ConsoleColor.White;
-            Console.Write("Worker Thread: #"+index+" "+name+" Checking Color at x: " + imgX + " y: " + imgY + ", it is " + pixelColor.Name + " , the source color is " + sourcePicturePixelColor.Name+" Is it going to place? :");
+            Console.Write(getTime()+" Worker Thread: #"+index+" "+name+" Checking Color at x: " + (cX+x) + " y: " + (cY+y) + ", it is " + pixelColor.Name + " , the source color is " + sourcePicturePixelColor.Name+" Is it going to place? :");
             if (!isSame == true)
             {
                 Console.ForegroundColor = ConsoleColor.Blue;
@@ -391,7 +392,7 @@ namespace PlaceBot2._0
                     }
                     else
                     {
-                        Console.WriteLine("Worker Thread: #"+index +" "+$"{username} - Authorization successful!");
+                        Console.WriteLine(getTime()+" Worker Thread: #"+index +" "+$"{username} - Authorization successful!");
                     }
 
                     // Obtain access token
@@ -448,7 +449,7 @@ namespace PlaceBot2._0
                 catch (Exception e)
                 {
                     Console.WriteLine("Failed to connect, trying again in 30 seconds...");
-                    Console.WriteLine("Worker Thread: #"+index+" "+name+" this is the exception " + e);
+                    Console.WriteLine(getTime() + " Worker Thread: #" +index+" "+name+" this is the exception " + e);
                     Thread.Sleep(30000);
                 }
             }
@@ -483,7 +484,7 @@ namespace PlaceBot2._0
                     }
                     catch(Exception e)
                     {
-                        Console.WriteLine("Worker Thread: #"+index+" "+name+" Failed to Connect to WebSocket, trying again in 30 seconds.. "+e);
+                        Console.WriteLine(getTime() + " Worker Thread: #" +index+" "+name+" Failed to Connect to WebSocket, trying again in 30 seconds.. "+e);
                         await Task.Delay(30000);
                     }
                 }
@@ -704,7 +705,7 @@ namespace PlaceBot2._0
 
             //Console.WriteLine("Getting Canvas");
             //finalImg.Save("hello.jpg", ImageFormat.Jpeg);
-            Rectangle cropArea = new Rectangle(500, 0, 2500 - 500, 2000 - 0);
+            Rectangle cropArea = new Rectangle(0, 0, 2500, 2000 - 0);
             Bitmap cropped = finalImg.Clone(cropArea,finalImg.PixelFormat);
             finalImg.Dispose();
             canvas_details.RemoveAll();
@@ -796,5 +797,19 @@ namespace PlaceBot2._0
         }
         public string getName()
         { return name; }
+
+        public void setBan(bool set)
+        {
+            isBanned = set;
+        }
+        public bool getBan()
+        { 
+            return isBanned;
+        }
+        public static string getTime()
+        {
+            string time = "[" + DateTime.Now.ToString("hh:mm:ss") + "]: ";
+            return time;
+        }
     }
 }
