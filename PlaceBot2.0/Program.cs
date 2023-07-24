@@ -11,8 +11,8 @@ namespace PlaceBot2._0
         {
             int thread_delay = 2501;
             //THESE COORDS ARE WHAT YOU SEE ON r/ place in browser
-            int startX = 1483;
-            int startY = 452;
+            int startX = 1345;
+            int startY = 639;
             string userfilePath = "accounts.txt"; //create your own
             string proxyFilePath = "proxy.txt"; //create your own
             List<string[]> userList = getUser(userfilePath);

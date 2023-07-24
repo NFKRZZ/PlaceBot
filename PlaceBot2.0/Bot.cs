@@ -604,7 +604,7 @@ namespace PlaceBot2._0
                     }
                     else
                     {
-                        Console.WriteLine("Waiting");
+                        //Console.WriteLine("Waiting");
                     }
                 }
 
@@ -653,7 +653,7 @@ namespace PlaceBot2._0
                     var buffer = new byte[1024];
                     var result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                     var messy = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                    File.WriteAllText("mess.txt", messy);
+                    //File.WriteAllText("mess.txt", messy);
                     JObject temp = JObject.Parse(messy);
 
                     if (temp["type"].ToString() == "data")
