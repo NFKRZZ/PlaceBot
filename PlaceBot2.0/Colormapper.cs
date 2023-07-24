@@ -11,6 +11,7 @@ namespace PlaceBot2._0
     {
         public static readonly Dictionary<string, int> COLOR_MAP = new Dictionary<string, int>
     {
+        { "#BE0039",1},        //Dark Red
         { "#FF4500", 2 },   // red
         { "#FFA800", 3 },   // orange T
         { "#FFD635", 4 },   // yellow T
@@ -31,6 +32,7 @@ namespace PlaceBot2._0
 
         public static readonly Dictionary<int, string> NAME_MAP = new Dictionary<int, string>
     {
+        { 1,"Dark Red" },
         { 2, "Red" },
         { 3, "Orange" },
         { 4, "Yellow" },

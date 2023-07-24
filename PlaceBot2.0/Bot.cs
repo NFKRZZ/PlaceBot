@@ -110,57 +110,90 @@ namespace PlaceBot2._0
 
             while (true)
             {
-                if (!threadBanned)
+                try
                 {
-                    Color currentLocationColor;
-                    lock (sourceImage)
+                    if (!threadBanned)
                     {
-                        currentLocationColor = sourceImage.GetPixel(localX, localY);
-                    }
-                    Thread.Sleep(100);
-                    if (checkifPlacePixel(localX, localY, currentLocationColor))
-                    {
-                        Thread.Sleep(100);
-                        Task.Run(() => placePixel(currentLocationColor, localX, localY));
-                        running = true;
-                        while (running)
+                        Color currentLocationColor;
+                        lock (sourceImage)
                         {
-                            if (!running)
-                            {
-                                Thread.Sleep(10);
-                                //THIS FORCES PLACEPIXEL TO COMPLETE ITS EXECUTION BEFORE MOVING ON SINCE RUNNING = FALSE AT THE END OF PLACEPIXEL()
-                                break;
-                            }
+                            currentLocationColor = sourceImage.GetPixel(localX, localY);
                         }
-                        // Console.WriteLine("Done");
-                        localX++;
-                        Thread.Sleep(timeOut * 1000);
-                        timeOut = 0;
+                        Thread.Sleep(100);
+
+                        bool place = false;
+                        do
+                        {
+                            lock (sourceImage)
+                            {
+                                if (localX > x_length - 1) { localX=0; }
+                                currentLocationColor = sourceImage.GetPixel(localX, localY);
+                            }
+                            place = checkifPlacePixel(localX, localY, currentLocationColor);
+                            if (place is false)
+                            {
+                                localX++;
+                                if (localX > x_length - 1)
+                                {
+                                    localX = 0;
+                                    localY++;
+                                }
+                                if (localY > y_length - 1)
+                                {
+                                    localY = 0;
+                                    localX = 0;
+                                }
+                            }
+                            Thread.Sleep(100);
+                        } while (place is false);
+
+                        if (place is true)
+                        {
+                            Thread.Sleep(100);
+                            Task.Run(() => placePixel(currentLocationColor, localX, localY));
+                            running = true;
+                            while (running)
+                            {
+                                if (!running)
+                                {
+                                    Thread.Sleep(10);
+                                    //THIS FORCES PLACEPIXEL TO COMPLETE ITS EXECUTION BEFORE MOVING ON SINCE RUNNING = FALSE AT THE END OF PLACEPIXEL()
+                                    break;
+                                }
+                            }
+                            // Console.WriteLine("Done");
+                            localX++;
+                            if (localX > x_length - 1)
+                            {
+                                localX = 0;
+                                localY++;
+                            }
+                            if (localY > y_length - 1)
+                            {
+                                localY = 0;
+                                localX = 0;
+                            }
+                            Thread.Sleep(timeOut * 1000);
+                            timeOut = 0;
+                        }
+                        else
+                        {
+                            localX++;
+                        }
+                        Thread.Sleep(500);
+                        //Console.WriteLine("Checking Board");
+                        boardImage = getBoard(accessToken).Result;
+                        Thread.Sleep(100);
                     }
                     else
                     {
-                        localX++;
+                        Thread.Sleep(100000);
                     }
-
-                    if (localX > x_length-1)
-                    {
-                        localX = 0;
-                        localY++;
-                    }
-                    if (localY > y_length-1)
-                    {
-                        localY = 0;
-                    }
-
-
-                    Thread.Sleep(500);
-                    //Console.WriteLine("Checking Board");
-                    boardImage = getBoard(accessToken).Result;
-                    Thread.Sleep(100);
                 }
-                else
+                catch (Exception e)
                 {
-                    Thread.Sleep(100000);
+                    Console.WriteLine("THIS IS X:"+localX+" THIS IS Y: "+localY+" THIS IS X_LENGTH: "+x_length+" THIS IS Y_LENGTH: "+y_length+" "+e.Message);
+                    throw;
                 }
             }
 
@@ -696,7 +729,7 @@ namespace PlaceBot2._0
                 }
 
                 finalImg = new_img;
-
+                Thread.Sleep(20);
             }
             catch (Exception e)
             {
