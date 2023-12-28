@@ -21,5 +21,9 @@ for ex:
 
 Same as above with the following format username:password
 
+Put the file name of the txt files in the code as shown in the following picture
+
+![image](https://github.com/NFKRZZ/PlaceBot/assets/43969824/0cc327a9-5326-4312-988c-9ed4f049da80)
+
 # Warning
 This may take up a lot of RAM, 450 accounts =~ 20 GB of RAM usage
