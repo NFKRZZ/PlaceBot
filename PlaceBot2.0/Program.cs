@@ -11,14 +11,14 @@ namespace PlaceBot2._0
         {
             int thread_delay = 2501;
             //THESE COORDS ARE WHAT YOU SEE ON r/ place in browser
-            int startX = 1345;
-            int startY = 639;
+            int startX = 1300;//1300 or 1277
+            int startY = -6;//-6
             string userfilePath = "accounts.txt"; //create your own
             string proxyFilePath = "proxy.txt"; //create your own
             List<string[]> userList = getUser(userfilePath);
             List<string> proxyList = getProxy(proxyFilePath);
             List<RedditPlaceWorker> botlist = new List<RedditPlaceWorker>();
-            string imagePath = "";
+            string imagePath = "smallaf.png";//smallaf
             Bitmap bitmap = new Bitmap(imagePath);
             int i = 0;
             int k = 0;
@@ -51,27 +51,43 @@ namespace PlaceBot2._0
             Console.WriteLine("FINISHED LOGGING INTO ALL THE REDDIT ACCOUNTS!!!!!!!!!!!!!!!!!!!!!!!!!");
             Console.ForegroundColor = ConsoleColor.Gray;
             Thread.Sleep(10000);
+            List<string> bannedAccounts = new List<string>();
+            bool fin = false;
             while (true)
             {
-                foreach (RedditPlaceWorker bot in botlist)
+                if (fin is false)
                 {
-                    if (bot.isThreadBanned()&& !bot.getBan())
+                    foreach (RedditPlaceWorker bot in botlist)
                     {
-                        try
+                        if (bot.isThreadBanned() && !bot.getBan())
                         {
-                            int index = bot.getIndex();
-                            //Console.WriteLine("Aborted Thread: #" + index + " user = " + bot.getName() + " due to rateLimit");
-                            //threadlist[index].Abort();
-                            Console.WriteLine("Aborted");
-                            bot.setBan(true);
+                            try
+                            {
+                                int index = bot.getIndex();
+                                //Console.WriteLine("Aborted Thread: #" + index + " user = " + bot.getName() + " due to rateLimit");
+                                //threadlist[index].Abort();
+                                Console.WriteLine("Aborted");
+                                bot.setBan(true);
+                                bannedAccounts.Add(bot.getName());
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e.ToString());
+                            }
+
                         }
-                        catch(Exception e)
-                        {
-                            Console.WriteLine(e.ToString());
-                        }
+                        Thread.Sleep(400);
 
                     }
-                    //Thread.Sleep(400);
+
+                    using(StreamWriter writer = new StreamWriter("banned.txt"))
+                    {
+                        foreach (string s in bannedAccounts)
+                        {
+                            writer.WriteLine(s);
+                        }
+                    }
+                    fin = true;
 
                 }
                 Thread.Sleep(500);
