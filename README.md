@@ -6,6 +6,7 @@
  It is for placing pixels on r/place  <br />
 BUGS: The Place Pixel method works but I'm not sure where the pixels are being placed.<br />
 TODO:Deal with Transparency in the source image. <br />
+<br />
 Possible fix to RAM issue. I don't see a point in fixing it now, but a way to remedy the ram issue would be to localize the bitmap that is being saved when each account's thread requests the canvas.
 Currently, each account thread has a bitmap of the entire canvas, but you the user are most likely only concerned with a small part of the canvas that you are botting over, as such the program could just crop down the bitmap to what covers the botted zone which would reduce the size in ram and heavily reduce ram consumption. 
 However, this would be something for someone else to implement.
