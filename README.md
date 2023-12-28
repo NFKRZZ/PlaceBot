@@ -5,7 +5,7 @@
  This supports multithreading and proxies  <br />
  It is for placing pixels on r/place  <br />
 BUGS: The Place Pixel method works but I'm not sure where the pixels are being placed.<br />
-TODO:Deal with Transparency in the source image.
+TODO:Deal with Transparency in the source image. Possible fix to RAM issue. I don't see a point in fixing it now, but a way to remedy the ram issue would be to localize the bitmap that is being saved when each account's thread requests the canvas.
 
 # How to Load Proxies
 
